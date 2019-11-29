@@ -6,7 +6,6 @@ const cheerio = require('cheerio');
 const BASE_URL = 'https://www.watchfinder.com';
 const SEARCH_URL = '/find/search?q=Rolex%20Omega';
 
-
 const optionsMainRequest = {
   uri: `${BASE_URL}${SEARCH_URL}`,
   transform:  body => cheerio.load(body),
@@ -25,8 +24,7 @@ exports.getWatchesLinks = async () =>  {
     .catch(err => console.error(err));
 }
 
-exports.getWatcheInfo = async (links) => {
-
+exports.getWatchesInfo = async (links) => {
   const arrayData = links.map(async (link) => {
     const optionsWatchRequest = {
       uri: `${BASE_URL}${link}`,
@@ -38,17 +36,15 @@ exports.getWatcheInfo = async (links) => {
     const brand = data('h1 .prod_brand').text();
     const model = data('h1 .prod_series').text();
     const referenceNumber = data('h1 .ellipsis').text();
-    const caseSize = data('.prod_info-table td').eq(10).next().text();
+    const caseSize = data('.prod_info-table td').eq(11).text();
 
-    const res = {
+    return ({
         brand,
         model,
         referenceNumber,
         caseSize
-      };
-
-    return res;
+      });
     })
 
-    return Promise.all([...arrayData])
+  return Promise.all([...arrayData])
 }
