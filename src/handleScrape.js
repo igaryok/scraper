@@ -4,20 +4,20 @@ const request = require('request-promise');
 const cheerio = require('cheerio');
 
 const BASE_URL = 'https://www.watchfinder.com';
-const SEARCH_URL = '/find/search?q=Rolex%20Omega';
 
-const optionsMainRequest = {
-  uri: `${BASE_URL}${SEARCH_URL}`,
-  transform:  body => cheerio.load(body),
-};
+exports.getWatchesLinks = async (amountLinks) =>  {
+  const SEARCH_URL = '/find/search?q=Rolex%20Omega';
+  const optionsMainRequest = {
+    uri: `${BASE_URL}${SEARCH_URL}`,
+    transform:  body => cheerio.load(body),
+  };
 
-exports.getWatchesLinks = async () =>  {
   return await request(optionsMainRequest)
     .then(data => {
       const elem = data('[id^="prods_"]').find('.prods_content a');
       const urls = [];
 
-      elem.slice(0, 10).each((index, item) => urls[index] = item.attribs.href);
+      elem.slice(0, amountLinks).each((index, item) => urls[index] = item.attribs.href);
       
       return urls;
     })
