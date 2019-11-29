@@ -36,7 +36,14 @@ exports.getWatchesInfo = async (links) => {
     const brand = data('h1 .prod_brand').text();
     const model = data('h1 .prod_series').text();
     const referenceNumber = data('h1 .ellipsis').text();
-    const caseSize = data('.prod_info-table td').eq(11).text();
+
+    const elem = data('.prod_info-table td').filter((i, el) => {
+      const textElem = data(el).text();
+      if (textElem === 'Case size') {
+        return el;
+      }  
+    })
+    const caseSize = elem.next().text();
 
     return ({
         brand,
